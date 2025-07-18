@@ -14,8 +14,11 @@ failed: [localhost] (item=fcos-42..molecule.lab) => {"ansible_loop_var": "item",
 ```
 
 # Todo
-- the machine shuts off when the container terminates ... its running inside the container. we can not see it from host ui. we see it with virsh and molecule can start it. how can we make it run on the host?
-- get molecule running
+- fix snapshot creation -> do we need polikit agent?
+```
+TASK [Create Snapshot] *********************************************************
+failed: [localhost] (item=fcos-42..molecule.lab) => {"ansible_loop_var": "item", "attempts": 3, "changed": true, "cmd": "virsh snapshot-create fcos-42..molecule.lab", "delta": "0:00:00.020699", "end": "2025-07-18 18:13:59.929373", "item": {"disk_size": "20G", "memory_size": "8", "name": "fcos-42..molecule.lab", "timezone": "Europe/Zurich", "vcpu": 8}, "msg": "non-zero return code", "rc": 1, "start": "2025-07-18 18:13:59.908674", "stderr": "Authorization not available. Check if polkit service is running or see debug message for more information.\nerror: failed to get domain 'fcos-42..molecule.lab'", "stderr_lines": ["Authorization not available. Check if polkit service is running or see debug message for more information.", "error: failed to get domain 'fcos-42..molecule.lab'"], "stdout": "", "stdout_lines": []}
+```
 - fix vm name
 - deploy the alias
 - build on quay
