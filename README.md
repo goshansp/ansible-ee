@@ -16,6 +16,7 @@ failed: [localhost] (item=fcos-42..molecule.lab) => {"ansible_loop_var": "item",
 # Todo
 - the machine shuts off when the container terminates ... its running inside the container. we can not see it from host ui. we see it with virsh and molecule can start it. how can we make it run on the host?
 - get molecule running
+- fix vm name
 - deploy the alias
 - build on quay
 - explore shell function in place of alias
@@ -34,9 +35,9 @@ failed: [localhost] (item=fcos-42..molecule.lab) => {"ansible_loop_var": "item",
 
 # WIP: Alias
 ```
-alias molecule='podman run --rm -it --userns=keep-id -v "$PWD":/src:z -v $XDG_RUNTIME_DIR/libvirt:/run/user/1000/libvirt:z -v /dev/kvm:/dev/kvm -v .local/molecule:/src/.local/molecule -w /src quay.io/rh_ee_hgosteli/ansible-ee molecule'
+alias molecule='podman run --rm -it --userns=keep-id -v "$PWD":/home/hp:z -v $XDG_RUNTIME_DIR/libvirt:/run/user/1000/libvirt:z -v /dev/kvm:/dev/kvm -v ~/.local/molecule:/home/hp/.local/molecule -w /home/hp quay.io/rh_ee_hgosteli/ansible-ee molecule'
 
-alias ansible-playbook='podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_ee_hgosteli/ansible-ee ansible-playbook'
+alias ansible-playbook='podman run --rm -it -v "$PWD":/home/hp:z -v ~/.local/molecule:/home/hp/.local/molecule -w /src quay.io/rh_ee_hgosteli/ansible-ee ansible-playbook'
 
 --userns=keep-id makes other terminal sessions hang and sometimes requires several minutes. subsequent launches are okay.
 
@@ -44,11 +45,7 @@ alias ansible-playbook='podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_
 
 # Debug
 ```
-podman run --rm -it --userns=keep-id -v "$PWD":/src:z -v $XDG_RUNTIME_DIR/libvirt:/run/user/1000/libvirt:z -v /dev/kvm:/dev/kvm -w /src quay.io/rh_ee_hgosteli/ansible-ee /bin/bash
-
-virsh list --all
-
-virsh undefine fcos-42..molecule.lab
+podman run --rm -it --userns=keep-id -v "$PWD":/home/hp:z -v $XDG_RUNTIME_DIR/libvirt:/run/user/1000/libvirt:z -v /dev/kvm:/dev/kvm -w /home/hp quay.io/rh_ee_hgosteli/ansible-ee /bin/bash
 
 ```
 
