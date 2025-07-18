@@ -23,7 +23,7 @@ RUN ansible-galaxy collection install bitwarden.secrets
 FROM quay.io/centos/centos:stream10
 
 # RUN dnf install openssh sshpass rsync git python3-libvirt wget -y
-RUN dnf install openssh
+RUN dnf install openssh-clients -y
 
 COPY --from=builder /install /usr/local
 
