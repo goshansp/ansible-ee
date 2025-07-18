@@ -1,0 +1,10 @@
+ansible
+ansible-lint
+flake8
+jmespath
+molecule
+netaddr
+libvirt-python
+lxml
+passlib
+yamllint
