@@ -1,6 +1,11 @@
-FROM quay.io/centos/centos:stream10 as builder
+# Source: https://github.com/alpine-docker/multi-arch-docker-images/blob/master/ansible/Dockerfile
+FROM alpine:latest as builder
 
-RUN dnf install cargo openssh sshpass rsync git python-libvirt python-pip wget -y
+RUN apk add --update --no-cache ansible bash openssh sshpass rsync git
+
+# workaround: install bitwarden sdk from source (487->+2GB)
+RUN ansible-galaxy collection install bitwarden.secrets
+RUN apk add --update --no-cache cargo py3-pip pkgconf
 
 RUN mkdir -p /install
 
@@ -8,21 +13,26 @@ RUN wget 'https://files.pythonhosted.org/packages/dd/03/11934ae9d668283895286872
 tar xf bitwarden_sdk-1.0.0.tar.gz && \
 cd bitwarden_sdk-1.0.0 && \
 wget 'https://raw.githubusercontent.com/bitwarden/sdk/refs/heads/main/LICENSE' && \
-pip install . --prefix=/install
+pip install . --prefix=/install --break-system-packages
 
 COPY requirements.txt requirements.txt
-RUN pip install --prefix=/install -r requirements.txt
-
-RUN pip install ansible
-RUN ansible-galaxy collection install bitwarden.secrets
+RUN pip install --prefix=/install -r requirements.txt --break-system-packages
 
 
 # --------------------------
 # STAGE 2: Minimal runtime
 # --------------------------
-FROM quay.io/centos/centos:stream10
+FROM alpine:latest
 
-# RUN dnf install openssh sshpass rsync git python3-libvirt wget -y
+# Install only runtime deps
+RUN apk add --no-cache \
+    python3 \
+    py3-pip \
+    bash \
+    openssh \
+    sshpass \
+    rsync \
+    git
 
 # Copy only installed Python files from builder stage
 COPY --from=builder /install /usr/local

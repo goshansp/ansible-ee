@@ -1,12 +1,11 @@
-# ansible-ee
+# Ansible-ee
 Creates an Ansible Execution Environment.
 
 # Resulting Image
 https://quay.io/repository/rh_ee_hgosteli/ansible-ee
 
 # Todo
-- integrate bitwarden
-- integrate requirements.txt from molecule.git
+- ansible-galaxy install
 - create alias
     “mole” that does the molecule stuff … 
     “ans” that does the ansible-playbook stuff …
@@ -24,12 +23,14 @@ https://quay.io/repository/rh_ee_hgosteli/ansible-ee
 
 # Build instructions
 ```
-$ podman build --manifest quay.io/rh_ee_hgosteli/ansible-ee --jobs 8 .
-$ podman manifest push quay.io/rh_ee_hgosteli/ansible-ee:latest
+podman login quay.io
+podman manifest create quay.io/rh_ee_hgosteli/ansible-ee
+podman build --platform "linux/arm64,linux/amd64" --manifest quay.io/rh_ee_hgosteli/ansible-ee .
+podman push quay.io/rh_ee_hgosteli/ansible-ee
 ```
 
 # Debug
 ```
-$ podman run --name=ansible-ee --rm -it quay.io/rh_ee_hgosteli/ansible-ee /bin/sh
+$ podman run --rm -it quay.io/rh_ee_hgosteli/ansible-ee /bin/bash
 
 ```

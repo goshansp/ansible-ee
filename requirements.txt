@@ -4,7 +4,7 @@ flake8
 jmespath
 molecule
 netaddr
-# libvirt-python #       Package 'libvirt' not found
+libvirt-python
 lxml
 passlib
 yamllint
