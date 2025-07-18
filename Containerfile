@@ -23,14 +23,11 @@ RUN ansible-galaxy collection install bitwarden.secrets
 FROM quay.io/centos/centos:stream10
 
 # RUN dnf install openssh sshpass rsync git python3-libvirt wget -y
-RUN dnf install openssh-clients python3-libvirt libvirt-daemon-driver-qemu -y
+
+RUN dnf install openssh-clients python3-libvirt libvirt-daemon-driver-qemu guestfs-tools -y
 
 COPY --from=builder /install /usr/local
 
-# Set Python path if needed (optional)
-# ENV PYTHONPATH=/usr/local/lib/python3.11/site-packages
-
-# CMD ["ansible", "--help"]
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

@@ -5,7 +5,8 @@ Creates an Ansible Execution Environment.
 https://quay.io/repository/rh_ee_hgosteli/ansible-ee
 
 
-
+# Known Issues
+- starting takes minutes since --userns=keep-id (image pull) and subsequent launches are fast.
 
 
 # Todo
@@ -37,7 +38,7 @@ alias ansible-playbook='podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_
 
 # Debug
 ```
-$ podman run --rm -it --userns=keep-id -v "$PWD":/src:z -v /run/user/1000/libvirt:/run/user/1000/libvirt:z -w /src quay.io/rh_ee_hgosteli/ansible-ee /bin/bash
+podman run --rm -it --userns=keep-id -v "$PWD":/src:z -v /run/user/1000/libvirt:/run/user/1000/libvirt:z -w /src quay.io/rh_ee_hgosteli/ansible-ee /bin/bash
 
 ```
 
