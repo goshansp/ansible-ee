@@ -5,17 +5,12 @@ Creates an Ansible Execution Environment.
 https://quay.io/repository/rh_ee_hgosteli/ansible-ee
 
 
-# WIP: Alias
-```
-alias molecule='podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_ee_hgosteli/ansible-ee molecule'
-alias ansible-playbook='podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_ee_hgosteli/ansible-ee ansible-playbook'
-```
+
 
 
 # Todo
-- create alias
-    “molecule” that does the molecule stuff … 
-    “ansible-playbook” that does the ansible-playbook stuff …
+- solve molecule ssh key issue?
+- deploy the alias
 - build on quay
 - explore shell function in place of alias
 - integrate with gitlab-runner
@@ -31,17 +26,25 @@ alias ansible-playbook='podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_
 - remove containerfile from ansible_role_controller
 - remove ansible from ostree silverblue build
 
-
-# Build instructions
+# WIP: Alias
 ```
-podman login quay.io
-podman manifest create quay.io/rh_ee_hgosteli/ansible-ee
-podman build --platform "linux/arm64,linux/amd64" --manifest quay.io/rh_ee_hgosteli/ansible-ee .
-podman push quay.io/rh_ee_hgosteli/ansible-ee
+alias molecule='podman run --rm -it --userns=keep-id -v "$PWD":/src:z -v $XDG_RUNTIME_DIR/libvirt:/run/user/1000/libvirt:z -w /src quay.io/rh_ee_hgosteli/ansible-ee molecule'
+alias ansible-playbook='podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_ee_hgosteli/ansible-ee ansible-playbook'
+
+--userns=keep-id makes other terminal sessions hang and sometimes requires several minutes. subsequent launches are okay.
+
 ```
 
 # Debug
 ```
-$ podman run --rm -it -v "$PWD":/src:z -w /src quay.io/rh_ee_hgosteli/ansible-ee /bin/bash
+$ podman run --rm -it --userns=keep-id -v "$PWD":/src:z -v /run/user/1000/libvirt:/run/user/1000/libvirt:z -w /src quay.io/rh_ee_hgosteli/ansible-ee /bin/bash
 
+```
+
+
+# Build instructions
+```
+podman login quay.io
+podman build -t quay.io/rh_ee_hgosteli/ansible-ee --jobs 8 .
+podman push quay.io/rh_ee_hgosteli/ansible-ee
 ```
